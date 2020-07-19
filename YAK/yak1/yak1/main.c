@@ -9,10 +9,10 @@ volatile int check1 = 0;	// 포토 인터럽트1
 volatile char receive = 0;	// 어플 받아오는 값
 volatile char send = 0;		// 어플 주는 값
 
-volatile int check_yak = 0;
-volatile int check_time = 0;
+volatile int check_yak = 0;		// 약이 통안에 있는지 파악하기 위한 변수
+volatile int check_time = 0;	// 약 시간인지 아닌지 파악하기 위한 변수
 
-volatile int motor_sel = 0; // 1:A 2:B 3:C
+volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택할 변수 switch case ..
 
 void motorA()
 {
@@ -38,18 +38,18 @@ void motorC()	// 잠금장치 ON OFF
 // 	_delay_ms(1000);
 }
 
-void motorC2()
+void motorC2()	// 잠금장치 ON OFF
 {
 	OCR1C = 1000;	// 돌아가기 전으로
 }
-ISR(INT0_vect) // PORTD0
+
+ISR(INT0_vect) // PORTD0 포토 인터럽트0
 {
 	check0 = 1;
 }
 
-ISR(INT1_vect) // PORTD1
+ISR(INT1_vect) // PORTD1 포토 인터럽트1
 {
-
 	check1 = 1;
 }
 
@@ -100,13 +100,16 @@ int main(void)
 	while(1)
 	{
 		// 약을 체크하는 코드 넣어야 함 (check_yak 변하게)
+		// 무게는 weight = ReadCout()/4
+		// ....
 		if(check_yak == 1)
 		{
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
+			// ....
 			if(check_time == 1)
 			{
 				/*주요 로직*/
-				switch(motor_sel)
+				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
 						while (check0 == 0)
@@ -131,5 +134,4 @@ int main(void)
 			} else { /*알람 보내기*/ }
 		} else {  } // 이상태엔 할게 있나
 	}
-	
 }

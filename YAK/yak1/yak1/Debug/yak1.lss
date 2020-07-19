@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000000dc  00000000  00000000  00001a14  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000482  00000000  00000000  00001af0  2**0
+ 10 .debug_str    00000486  00000000  00000000  00001af0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000001fa  00000000  00000000  00001f72  2**0
+ 11 .debug_loc    000001fa  00000000  00000000  00001f76  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000058  00000000  00000000  0000216c  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  00002170  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -296,11 +296,11 @@ int main(void)
 	
 	sei();
  1c4:	78 94       	sei
-	
-
 	while(1)
 	{
 		// 약을 체크하는 코드 넣어야 함 (check_yak 변하게)
+		// 무게는 weight = ReadCout()/4
+		// ....
 		if(check_yak == 1)
  1c6:	80 91 04 01 	lds	r24, 0x0104	; 0x800104 <check_yak>
  1ca:	90 91 05 01 	lds	r25, 0x0105	; 0x800105 <check_yak+0x1>
@@ -308,6 +308,7 @@ int main(void)
  1d0:	d1 f7       	brne	.-12     	; 0x1c6 <main+0x24>
 		{
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
+			// ....
 			if(check_time == 1)
  1d2:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <check_time>
  1d6:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <check_time+0x1>
@@ -315,7 +316,7 @@ int main(void)
  1dc:	a1 f7       	brne	.-24     	; 0x1c6 <main+0x24>
 			{
 				/*주요 로직*/
-				switch(motor_sel)
+				switch(motor_sel)	// motor_sel=1 : A, 2:B
  1de:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
  1e2:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <_edata+0x1>
  1e6:	81 30       	cpi	r24, 0x01	; 1
@@ -336,7 +337,7 @@ int main(void)
  1fc:	16 c0       	rjmp	.+44     	; 0x22a <main+0x88>
 			{
 				/*주요 로직*/
-				switch(motor_sel)
+				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
 						while (check0 == 0)
@@ -349,7 +350,7 @@ int main(void)
  20a:	51 df       	rcall	.-350    	; 0xae <motorA>
 			{
 				/*주요 로직*/
-				switch(motor_sel)
+				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
 						while (check0 == 0)

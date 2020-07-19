@@ -99,7 +99,7 @@ void init()
 	while(1)
 	{
 		weight = ReadCout()/4;	// 무게는 weight = ReadCout()/4
-		UART1_TX_int(weight);
+		UART1_TX_int(weight);	// 아래는 테스트용 UART1을 통한 전송
 		UART1_TX('\n');
 		UART1_TX('\r');
 	}

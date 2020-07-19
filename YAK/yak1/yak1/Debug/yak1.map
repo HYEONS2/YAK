@@ -32,7 +32,7 @@ Discarded input sections
                 0x00000000       0x38 hx711.o
  .debug_ranges  0x00000000       0x28 hx711.o
  .debug_line    0x00000000      0x1f7 hx711.o
- .debug_str     0x00000000      0x1b5 hx711.o
+ .debug_str     0x00000000      0x1b9 hx711.o
  .comment       0x00000000       0x31 hx711.o
  .debug_frame   0x00000000       0x7c hx711.o
  .text          0x00000000        0x0 main.o
@@ -484,11 +484,11 @@ END GROUP
  *(.debug_frame)
  .debug_frame   0x00000000       0xdc main.o
 
-.debug_str      0x00000000      0x482
+.debug_str      0x00000000      0x486
  *(.debug_str)
  .debug_str     0x00000000      0x27d c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr51/crtatmega128.o
- .debug_str     0x0000027d      0x205 main.o
-                                0x24b (size before relaxing)
+ .debug_str     0x0000027d      0x209 main.o
+                                0x24f (size before relaxing)
 
 .debug_loc      0x00000000      0x1fa
  *(.debug_loc)
