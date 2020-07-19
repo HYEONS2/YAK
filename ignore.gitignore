@@ -21,6 +21,7 @@
 *.hex
 *.map
 *.srec
+*.lss
 
 #User Specific Files
 *.atsuo
