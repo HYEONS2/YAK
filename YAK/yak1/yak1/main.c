@@ -108,7 +108,7 @@ int main(void)
 	
 	long temp_weight[5]=0;	
 	
-	★★★★★★★★★  */
+	★★★★★★★★★..  */
 	
 	while(1)
 	{
