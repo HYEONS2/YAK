@@ -10,7 +10,9 @@
 #define HX711_H_
 #include <avr/io.h>
 
-
+void weight_init();
+unsigned long  ReadCout(void);
+void init();
 
 
 #endif /* HX711_H_ */

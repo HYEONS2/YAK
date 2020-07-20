@@ -31,16 +31,13 @@ void UART1_TX_int(unsigned long data)
 	UART1_TX(temp+48);
 	temp = (data&10);
 	UART1_TX(temp+48);
-}
+}	// 48은 아스키코드와 관련이 있음
 
 unsigned long  ReadCout(void);
 
 volatile unsigned long weight = 0;
 volatile unsigned long offset = 0;
 volatile int offset_flag = 0;
-
-
-
 
 unsigned long ReadCout(void)
 {
@@ -103,4 +100,15 @@ void init()
 		UART1_TX('\n');
 		UART1_TX('\r');
 	}
+}
+
+void weight_init()
+{
+	DDRA = 0b00000010; // A0(DOUT) : input A1(SCK):output
+	
+	UCSR1A = 0b00000000;
+	UCSR1B = 0b00001000;
+	UCSR1C = 0b00000110;
+	UBRR1H = 0;
+	UBRR1L = 103;
 }

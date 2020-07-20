@@ -3,31 +3,31 @@ yak1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000002b6  2**0
+  0 .data         00000000  00800100  00800100  0000031e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000242  00000000  00000000  00000074  2**1
+  1 .text         000002aa  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000000a  00800100  00800100  000002b6  2**0
+  2 .bss          0000000b  00800100  00800100  0000031e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000002b6  2**0
+  3 .comment      00000030  00000000  00000000  0000031e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002e8  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000350  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000068  00000000  00000000  00000324  2**0
+  5 .debug_aranges 000000a8  00000000  00000000  0000038c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000b16  00000000  00000000  0000038c  2**0
+  6 .debug_info   00000d5d  00000000  00000000  00000434  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000893  00000000  00000000  00000ea2  2**0
+  7 .debug_abbrev 000009eb  00000000  00000000  00001191  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000002df  00000000  00000000  00001735  2**0
+  8 .debug_line   00000552  00000000  00000000  00001b7c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000dc  00000000  00000000  00001a14  2**2
+  9 .debug_frame  00000168  00000000  00000000  000020d0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000486  00000000  00000000  00001af0  2**0
+ 10 .debug_str    000004ef  00000000  00000000  00002238  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000001fa  00000000  00000000  00001f76  2**0
+ 11 .debug_loc    000005b0  00000000  00000000  00002727  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000058  00000000  00000000  00002170  2**0
+ 12 .debug_ranges 00000088  00000000  00000000  00002cd7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -35,9 +35,9 @@ Disassembly of section .text:
 00000000 <__vectors>:
    0:	45 c0       	rjmp	.+138    	; 0x8c <__ctors_end>
    2:	00 00       	nop
-   4:	9a c0       	rjmp	.+308    	; 0x13a <__vector_1>
+   4:	aa c0       	rjmp	.+340    	; 0x15a <__vector_1>
    6:	00 00       	nop
-   8:	ac c0       	rjmp	.+344    	; 0x162 <__vector_2>
+   8:	bc c0       	rjmp	.+376    	; 0x182 <__vector_2>
    a:	00 00       	nop
    c:	4f c0       	rjmp	.+158    	; 0xac <__bad_interrupt>
    e:	00 00       	nop
@@ -122,284 +122,375 @@ Disassembly of section .text:
   a0:	1d 92       	st	X+, r1
 
 000000a2 <.do_clear_bss_start>:
-  a2:	aa 30       	cpi	r26, 0x0A	; 10
+  a2:	ab 30       	cpi	r26, 0x0B	; 11
   a4:	b2 07       	cpc	r27, r18
   a6:	e1 f7       	brne	.-8      	; 0xa0 <.do_clear_bss_loop>
-  a8:	7c d0       	rcall	.+248    	; 0x1a2 <main>
-  aa:	c9 c0       	rjmp	.+402    	; 0x23e <_exit>
+  a8:	90 d0       	rcall	.+288    	; 0x1ca <main>
+  aa:	fd c0       	rjmp	.+506    	; 0x2a6 <_exit>
 
 000000ac <__bad_interrupt>:
   ac:	a9 cf       	rjmp	.-174    	; 0x0 <__vectors>
 
-000000ae <motorA>:
-{
-	while(!(UCSR0A & 0x80));
-	//수신완료 flag 비트가 1되면 정지
-	return UDR0;
-	//UART0번 사용
+000000ae <weight_init>:
+	}
 }
-  ae:	8c e1       	ldi	r24, 0x1C	; 28
-  b0:	9c e0       	ldi	r25, 0x0C	; 12
-  b2:	9b bd       	out	0x2b, r25	; 43
-  b4:	8a bd       	out	0x2a, r24	; 42
-  b6:	2f ef       	ldi	r18, 0xFF	; 255
-  b8:	83 ed       	ldi	r24, 0xD3	; 211
-  ba:	90 e3       	ldi	r25, 0x30	; 48
-  bc:	21 50       	subi	r18, 0x01	; 1
-  be:	80 40       	sbci	r24, 0x00	; 0
-  c0:	90 40       	sbci	r25, 0x00	; 0
-  c2:	e1 f7       	brne	.-8      	; 0xbc <motorA+0xe>
-  c4:	00 c0       	rjmp	.+0      	; 0xc6 <motorA+0x18>
-  c6:	00 00       	nop
-  c8:	88 ee       	ldi	r24, 0xE8	; 232
-  ca:	93 e0       	ldi	r25, 0x03	; 3
-  cc:	9b bd       	out	0x2b, r25	; 43
-  ce:	8a bd       	out	0x2a, r24	; 42
-  d0:	2f ef       	ldi	r18, 0xFF	; 255
-  d2:	83 ed       	ldi	r24, 0xD3	; 211
-  d4:	90 e3       	ldi	r25, 0x30	; 48
-  d6:	21 50       	subi	r18, 0x01	; 1
-  d8:	80 40       	sbci	r24, 0x00	; 0
-  da:	90 40       	sbci	r25, 0x00	; 0
-  dc:	e1 f7       	brne	.-8      	; 0xd6 <motorA+0x28>
-  de:	00 c0       	rjmp	.+0      	; 0xe0 <motorA+0x32>
-  e0:	00 00       	nop
-  e2:	08 95       	ret
 
-000000e4 <motorB>:
-  e4:	8c e1       	ldi	r24, 0x1C	; 28
-  e6:	9c e0       	ldi	r25, 0x0C	; 12
-  e8:	99 bd       	out	0x29, r25	; 41
-  ea:	88 bd       	out	0x28, r24	; 40
-  ec:	2f ef       	ldi	r18, 0xFF	; 255
-  ee:	83 ed       	ldi	r24, 0xD3	; 211
-  f0:	90 e3       	ldi	r25, 0x30	; 48
-  f2:	21 50       	subi	r18, 0x01	; 1
-  f4:	80 40       	sbci	r24, 0x00	; 0
-  f6:	90 40       	sbci	r25, 0x00	; 0
-  f8:	e1 f7       	brne	.-8      	; 0xf2 <motorB+0xe>
-  fa:	00 c0       	rjmp	.+0      	; 0xfc <motorB+0x18>
-  fc:	00 00       	nop
-  fe:	88 ee       	ldi	r24, 0xE8	; 232
- 100:	93 e0       	ldi	r25, 0x03	; 3
- 102:	99 bd       	out	0x29, r25	; 41
- 104:	88 bd       	out	0x28, r24	; 40
- 106:	2f ef       	ldi	r18, 0xFF	; 255
- 108:	83 ed       	ldi	r24, 0xD3	; 211
- 10a:	90 e3       	ldi	r25, 0x30	; 48
- 10c:	21 50       	subi	r18, 0x01	; 1
- 10e:	80 40       	sbci	r24, 0x00	; 0
- 110:	90 40       	sbci	r25, 0x00	; 0
- 112:	e1 f7       	brne	.-8      	; 0x10c <motorB+0x28>
- 114:	00 c0       	rjmp	.+0      	; 0x116 <motorB+0x32>
- 116:	00 00       	nop
- 118:	08 95       	ret
+void weight_init()
+{
+	DDRA = 0b00000010; // A0(DOUT) : input A1(SCK):output
+  ae:	82 e0       	ldi	r24, 0x02	; 2
+  b0:	8a bb       	out	0x1a, r24	; 26
+	
+	UCSR1A = 0b00000000;
+  b2:	10 92 9b 00 	sts	0x009B, r1	; 0x80009b <__TEXT_REGION_LENGTH__+0x7e009b>
+	UCSR1B = 0b00001000;
+  b6:	88 e0       	ldi	r24, 0x08	; 8
+  b8:	80 93 9a 00 	sts	0x009A, r24	; 0x80009a <__TEXT_REGION_LENGTH__+0x7e009a>
+	UCSR1C = 0b00000110;
+  bc:	86 e0       	ldi	r24, 0x06	; 6
+  be:	80 93 9d 00 	sts	0x009D, r24	; 0x80009d <__TEXT_REGION_LENGTH__+0x7e009d>
+	UBRR1H = 0;
+  c2:	10 92 98 00 	sts	0x0098, r1	; 0x800098 <__TEXT_REGION_LENGTH__+0x7e0098>
+	UBRR1L = 103;
+  c6:	87 e6       	ldi	r24, 0x67	; 103
+  c8:	80 93 99 00 	sts	0x0099, r24	; 0x800099 <__TEXT_REGION_LENGTH__+0x7e0099>
+  cc:	08 95       	ret
 
-0000011a <motorC>:
- 11a:	8c e1       	ldi	r24, 0x1C	; 28
- 11c:	9c e0       	ldi	r25, 0x0C	; 12
- 11e:	90 93 79 00 	sts	0x0079, r25	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
- 122:	80 93 78 00 	sts	0x0078, r24	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
+000000ce <motorA>:
+}
+
+void uart_send(char data)
+{
+	while(!(UCSR0A & (1<<UDRE0)));
+	UDR0 = data;
+  ce:	8c e1       	ldi	r24, 0x1C	; 28
+  d0:	9c e0       	ldi	r25, 0x0C	; 12
+  d2:	9b bd       	out	0x2b, r25	; 43
+  d4:	8a bd       	out	0x2a, r24	; 42
+  d6:	2f ef       	ldi	r18, 0xFF	; 255
+  d8:	83 ed       	ldi	r24, 0xD3	; 211
+  da:	90 e3       	ldi	r25, 0x30	; 48
+  dc:	21 50       	subi	r18, 0x01	; 1
+  de:	80 40       	sbci	r24, 0x00	; 0
+  e0:	90 40       	sbci	r25, 0x00	; 0
+  e2:	e1 f7       	brne	.-8      	; 0xdc <motorA+0xe>
+  e4:	00 c0       	rjmp	.+0      	; 0xe6 <motorA+0x18>
+  e6:	00 00       	nop
+  e8:	88 ee       	ldi	r24, 0xE8	; 232
+  ea:	93 e0       	ldi	r25, 0x03	; 3
+  ec:	9b bd       	out	0x2b, r25	; 43
+  ee:	8a bd       	out	0x2a, r24	; 42
+  f0:	2f ef       	ldi	r18, 0xFF	; 255
+  f2:	83 ed       	ldi	r24, 0xD3	; 211
+  f4:	90 e3       	ldi	r25, 0x30	; 48
+  f6:	21 50       	subi	r18, 0x01	; 1
+  f8:	80 40       	sbci	r24, 0x00	; 0
+  fa:	90 40       	sbci	r25, 0x00	; 0
+  fc:	e1 f7       	brne	.-8      	; 0xf6 <motorA+0x28>
+  fe:	00 c0       	rjmp	.+0      	; 0x100 <motorA+0x32>
+ 100:	00 00       	nop
+ 102:	08 95       	ret
+
+00000104 <motorB>:
+ 104:	8c e1       	ldi	r24, 0x1C	; 28
+ 106:	9c e0       	ldi	r25, 0x0C	; 12
+ 108:	99 bd       	out	0x29, r25	; 41
+ 10a:	88 bd       	out	0x28, r24	; 40
+ 10c:	2f ef       	ldi	r18, 0xFF	; 255
+ 10e:	83 ed       	ldi	r24, 0xD3	; 211
+ 110:	90 e3       	ldi	r25, 0x30	; 48
+ 112:	21 50       	subi	r18, 0x01	; 1
+ 114:	80 40       	sbci	r24, 0x00	; 0
+ 116:	90 40       	sbci	r25, 0x00	; 0
+ 118:	e1 f7       	brne	.-8      	; 0x112 <motorB+0xe>
+ 11a:	00 c0       	rjmp	.+0      	; 0x11c <motorB+0x18>
+ 11c:	00 00       	nop
+ 11e:	88 ee       	ldi	r24, 0xE8	; 232
+ 120:	93 e0       	ldi	r25, 0x03	; 3
+ 122:	99 bd       	out	0x29, r25	; 41
+ 124:	88 bd       	out	0x28, r24	; 40
  126:	2f ef       	ldi	r18, 0xFF	; 255
  128:	83 ed       	ldi	r24, 0xD3	; 211
  12a:	90 e3       	ldi	r25, 0x30	; 48
  12c:	21 50       	subi	r18, 0x01	; 1
  12e:	80 40       	sbci	r24, 0x00	; 0
  130:	90 40       	sbci	r25, 0x00	; 0
- 132:	e1 f7       	brne	.-8      	; 0x12c <motorC+0x12>
- 134:	00 c0       	rjmp	.+0      	; 0x136 <motorC+0x1c>
+ 132:	e1 f7       	brne	.-8      	; 0x12c <motorB+0x28>
+ 134:	00 c0       	rjmp	.+0      	; 0x136 <motorB+0x32>
  136:	00 00       	nop
  138:	08 95       	ret
 
-0000013a <__vector_1>:
- 13a:	1f 92       	push	r1
- 13c:	0f 92       	push	r0
- 13e:	0f b6       	in	r0, 0x3f	; 63
- 140:	0f 92       	push	r0
- 142:	11 24       	eor	r1, r1
- 144:	8f 93       	push	r24
- 146:	9f 93       	push	r25
- 148:	81 e0       	ldi	r24, 0x01	; 1
- 14a:	90 e0       	ldi	r25, 0x00	; 0
- 14c:	90 93 09 01 	sts	0x0109, r25	; 0x800109 <check0+0x1>
- 150:	80 93 08 01 	sts	0x0108, r24	; 0x800108 <check0>
- 154:	9f 91       	pop	r25
- 156:	8f 91       	pop	r24
- 158:	0f 90       	pop	r0
- 15a:	0f be       	out	0x3f, r0	; 63
- 15c:	0f 90       	pop	r0
- 15e:	1f 90       	pop	r1
- 160:	18 95       	reti
+0000013a <motorC>:
+ 13a:	8c e1       	ldi	r24, 0x1C	; 28
+ 13c:	9c e0       	ldi	r25, 0x0C	; 12
+ 13e:	90 93 79 00 	sts	0x0079, r25	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
+ 142:	80 93 78 00 	sts	0x0078, r24	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
+ 146:	2f ef       	ldi	r18, 0xFF	; 255
+ 148:	83 ed       	ldi	r24, 0xD3	; 211
+ 14a:	90 e3       	ldi	r25, 0x30	; 48
+ 14c:	21 50       	subi	r18, 0x01	; 1
+ 14e:	80 40       	sbci	r24, 0x00	; 0
+ 150:	90 40       	sbci	r25, 0x00	; 0
+ 152:	e1 f7       	brne	.-8      	; 0x14c <motorC+0x12>
+ 154:	00 c0       	rjmp	.+0      	; 0x156 <motorC+0x1c>
+ 156:	00 00       	nop
+ 158:	08 95       	ret
 
-00000162 <__vector_2>:
- 162:	1f 92       	push	r1
- 164:	0f 92       	push	r0
- 166:	0f b6       	in	r0, 0x3f	; 63
- 168:	0f 92       	push	r0
- 16a:	11 24       	eor	r1, r1
- 16c:	8f 93       	push	r24
- 16e:	9f 93       	push	r25
- 170:	81 e0       	ldi	r24, 0x01	; 1
- 172:	90 e0       	ldi	r25, 0x00	; 0
- 174:	90 93 07 01 	sts	0x0107, r25	; 0x800107 <check1+0x1>
- 178:	80 93 06 01 	sts	0x0106, r24	; 0x800106 <check1>
- 17c:	9f 91       	pop	r25
- 17e:	8f 91       	pop	r24
- 180:	0f 90       	pop	r0
- 182:	0f be       	out	0x3f, r0	; 63
- 184:	0f 90       	pop	r0
- 186:	1f 90       	pop	r1
- 188:	18 95       	reti
+0000015a <__vector_1>:
+ 15a:	1f 92       	push	r1
+ 15c:	0f 92       	push	r0
+ 15e:	0f b6       	in	r0, 0x3f	; 63
+ 160:	0f 92       	push	r0
+ 162:	11 24       	eor	r1, r1
+ 164:	8f 93       	push	r24
+ 166:	9f 93       	push	r25
+ 168:	81 e0       	ldi	r24, 0x01	; 1
+ 16a:	90 e0       	ldi	r25, 0x00	; 0
+ 16c:	90 93 0a 01 	sts	0x010A, r25	; 0x80010a <check0+0x1>
+ 170:	80 93 09 01 	sts	0x0109, r24	; 0x800109 <check0>
+ 174:	9f 91       	pop	r25
+ 176:	8f 91       	pop	r24
+ 178:	0f 90       	pop	r0
+ 17a:	0f be       	out	0x3f, r0	; 63
+ 17c:	0f 90       	pop	r0
+ 17e:	1f 90       	pop	r1
+ 180:	18 95       	reti
 
-0000018a <uart_init>:
- 18a:	1b b8       	out	0x0b, r1	; 11
- 18c:	88 e1       	ldi	r24, 0x18	; 24
- 18e:	8a b9       	out	0x0a, r24	; 10
- 190:	86 e0       	ldi	r24, 0x06	; 6
- 192:	80 93 95 00 	sts	0x0095, r24	; 0x800095 <__TEXT_REGION_LENGTH__+0x7e0095>
- 196:	10 92 90 00 	sts	0x0090, r1	; 0x800090 <__TEXT_REGION_LENGTH__+0x7e0090>
- 19a:	87 e6       	ldi	r24, 0x67	; 103
- 19c:	89 b9       	out	0x09, r24	; 9
- 19e:	78 94       	sei
- 1a0:	08 95       	ret
+00000182 <__vector_2>:
+ 182:	1f 92       	push	r1
+ 184:	0f 92       	push	r0
+ 186:	0f b6       	in	r0, 0x3f	; 63
+ 188:	0f 92       	push	r0
+ 18a:	11 24       	eor	r1, r1
+ 18c:	8f 93       	push	r24
+ 18e:	9f 93       	push	r25
+ 190:	81 e0       	ldi	r24, 0x01	; 1
+ 192:	90 e0       	ldi	r25, 0x00	; 0
+ 194:	90 93 08 01 	sts	0x0108, r25	; 0x800108 <check1+0x1>
+ 198:	80 93 07 01 	sts	0x0107, r24	; 0x800107 <check1>
+ 19c:	9f 91       	pop	r25
+ 19e:	8f 91       	pop	r24
+ 1a0:	0f 90       	pop	r0
+ 1a2:	0f be       	out	0x3f, r0	; 63
+ 1a4:	0f 90       	pop	r0
+ 1a6:	1f 90       	pop	r1
+ 1a8:	18 95       	reti
 
-000001a2 <main>:
+000001aa <uart_init>:
+ 1aa:	1b b8       	out	0x0b, r1	; 11
+ 1ac:	88 e1       	ldi	r24, 0x18	; 24
+ 1ae:	8a b9       	out	0x0a, r24	; 10
+ 1b0:	86 e0       	ldi	r24, 0x06	; 6
+ 1b2:	80 93 95 00 	sts	0x0095, r24	; 0x800095 <__TEXT_REGION_LENGTH__+0x7e0095>
+ 1b6:	10 92 90 00 	sts	0x0090, r1	; 0x800090 <__TEXT_REGION_LENGTH__+0x7e0090>
+ 1ba:	87 e6       	ldi	r24, 0x67	; 103
+ 1bc:	89 b9       	out	0x09, r24	; 9
+ 1be:	78 94       	sei
+ 1c0:	08 95       	ret
+
+000001c2 <uart_receive>:
+}
+
+char uart_receive(void)
+{
+	while(!(UCSR0A & 0x80));
+ 1c2:	5f 9b       	sbis	0x0b, 7	; 11
+ 1c4:	fe cf       	rjmp	.-4      	; 0x1c2 <uart_receive>
+	//수신완료 flag 비트가 1되면 정지
+	return UDR0;
+ 1c6:	8c b1       	in	r24, 0x0c	; 12
+	//UART0번 사용
+}
+ 1c8:	08 95       	ret
+
+000001ca <main>:
 
 int main(void)
 {
 	DDRB=0b11100000;   // PB567 out
- 1a2:	80 ee       	ldi	r24, 0xE0	; 224
- 1a4:	87 bb       	out	0x17, r24	; 23
+ 1ca:	80 ee       	ldi	r24, 0xE0	; 224
+ 1cc:	87 bb       	out	0x17, r24	; 23
 	TCCR1A=0b10101010; TCCR1B=0x1A;  ICR1=19999; // OCR1A -> OC Clear / Fast PWM TOP = ICR1 / 8분주
- 1a6:	8a ea       	ldi	r24, 0xAA	; 170
- 1a8:	8f bd       	out	0x2f, r24	; 47
- 1aa:	8a e1       	ldi	r24, 0x1A	; 26
- 1ac:	8e bd       	out	0x2e, r24	; 46
- 1ae:	8f e1       	ldi	r24, 0x1F	; 31
- 1b0:	9e e4       	ldi	r25, 0x4E	; 78
- 1b2:	97 bd       	out	0x27, r25	; 39
- 1b4:	86 bd       	out	0x26, r24	; 38
+ 1ce:	8a ea       	ldi	r24, 0xAA	; 170
+ 1d0:	8f bd       	out	0x2f, r24	; 47
+ 1d2:	8a e1       	ldi	r24, 0x1A	; 26
+ 1d4:	8e bd       	out	0x2e, r24	; 46
+ 1d6:	8f e1       	ldi	r24, 0x1F	; 31
+ 1d8:	9e e4       	ldi	r25, 0x4E	; 78
+ 1da:	97 bd       	out	0x27, r25	; 39
+ 1dc:	86 bd       	out	0x26, r24	; 38
 	//OCR1A=3000; OCR1B=3000;
 	// TCCR1B=0x1A; OCR1A=3000; ICR1=19999;
 	uart_init();
- 1b6:	e9 df       	rcall	.-46     	; 0x18a <uart_init>
+ 1de:	e5 df       	rcall	.-54     	; 0x1aa <uart_init>
 
 	// External Interrupt(s) initialization
 	EICRA=0b00001010; //외부인터럽트 01번핀 트리거 신호를  falling edge 설정
- 1b8:	8a e0       	ldi	r24, 0x0A	; 10
- 1ba:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
+ 1e0:	8a e0       	ldi	r24, 0x0A	; 10
+ 1e2:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
 	EICRB=0x00; 
- 1be:	1a be       	out	0x3a, r1	; 58
+ 1e6:	1a be       	out	0x3a, r1	; 58
 	EIMSK=0x03; //INT0 1번핀을 외부인터럽트 핀으로 설정, 0 1번 외부인터럽트 활성화	
- 1c0:	83 e0       	ldi	r24, 0x03	; 3
- 1c2:	89 bf       	out	0x39, r24	; 57
+ 1e8:	83 e0       	ldi	r24, 0x03	; 3
+ 1ea:	89 bf       	out	0x39, r24	; 57
 	
 	sei();
- 1c4:	78 94       	sei
-	while(1)
+	
+	weight_init();	// 무게 측정 코드 레지스터 설정 함수
+ 1ec:	78 94       	sei
+ 1ee:	5f df       	rcall	.-322    	; 0xae <weight_init>
+			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
+			// 폴링 방식이 안된다면 인터럽트로 수신받아야 함
+			
+			if(receive == 'a'){
+				// A약 시간이 맞으면 a 를 받음 (알람일때?)
+				check_time = 1;
+ 1f0:	c1 e0       	ldi	r28, 0x01	; 1
+ 1f2:	d0 e0       	ldi	r29, 0x00	; 0
+			} 
+			
+			if(receive == 'b'){
+				// B약 시간이 맞으면 b 를 받음 (알람일때?)
+				check_time = 1;
+				motor_sel = 2;	// b모터 선택
+ 1f4:	02 e0       	ldi	r16, 0x02	; 2
+ 1f6:	10 e0       	ldi	r17, 0x00	; 0
 	{
 		// 약을 체크하는 코드 넣어야 함 (check_yak 변하게)
 		// 무게는 weight = ReadCout()/4
 		// ....
+		
 		if(check_yak == 1)
- 1c6:	80 91 04 01 	lds	r24, 0x0104	; 0x800104 <check_yak>
- 1ca:	90 91 05 01 	lds	r25, 0x0105	; 0x800105 <check_yak+0x1>
- 1ce:	01 97       	sbiw	r24, 0x01	; 1
- 1d0:	d1 f7       	brne	.-12     	; 0x1c6 <main+0x24>
+ 1f8:	80 91 04 01 	lds	r24, 0x0104	; 0x800104 <check_yak>
+ 1fc:	90 91 05 01 	lds	r25, 0x0105	; 0x800105 <check_yak+0x1>
+ 200:	01 97       	sbiw	r24, 0x01	; 1
 		{
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
 			// ....
+			
+			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
+ 202:	d1 f7       	brne	.-12     	; 0x1f8 <main+0x2e>
+ 204:	de df       	rcall	.-68     	; 0x1c2 <uart_receive>
+ 206:	80 93 06 01 	sts	0x0106, r24	; 0x800106 <receive>
+			// 폴링 방식이 안된다면 인터럽트로 수신받아야 함
+			
+			if(receive == 'a'){
+ 20a:	80 91 06 01 	lds	r24, 0x0106	; 0x800106 <receive>
+ 20e:	81 36       	cpi	r24, 0x61	; 97
+ 210:	41 f4       	brne	.+16     	; 0x222 <main+0x58>
+				// A약 시간이 맞으면 a 를 받음 (알람일때?)
+				check_time = 1;
+ 212:	d0 93 03 01 	sts	0x0103, r29	; 0x800103 <check_time+0x1>
+ 216:	c0 93 02 01 	sts	0x0102, r28	; 0x800102 <check_time>
+				motor_sel = 1;	// a모터 선택
+ 21a:	d0 93 01 01 	sts	0x0101, r29	; 0x800101 <_edata+0x1>
+ 21e:	c0 93 00 01 	sts	0x0100, r28	; 0x800100 <_edata>
+			} 
+			
+			if(receive == 'b'){
+ 222:	80 91 06 01 	lds	r24, 0x0106	; 0x800106 <receive>
+ 226:	82 36       	cpi	r24, 0x62	; 98
+ 228:	41 f4       	brne	.+16     	; 0x23a <main+0x70>
+				// B약 시간이 맞으면 b 를 받음 (알람일때?)
+				check_time = 1;
+ 22a:	d0 93 03 01 	sts	0x0103, r29	; 0x800103 <check_time+0x1>
+ 22e:	c0 93 02 01 	sts	0x0102, r28	; 0x800102 <check_time>
+				motor_sel = 2;	// b모터 선택
+ 232:	10 93 01 01 	sts	0x0101, r17	; 0x800101 <_edata+0x1>
+ 236:	00 93 00 01 	sts	0x0100, r16	; 0x800100 <_edata>
+			}
+			
 			if(check_time == 1)
- 1d2:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <check_time>
- 1d6:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <check_time+0x1>
- 1da:	01 97       	sbiw	r24, 0x01	; 1
- 1dc:	a1 f7       	brne	.-24     	; 0x1c6 <main+0x24>
+ 23a:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <check_time>
+ 23e:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <check_time+0x1>
+ 242:	01 97       	sbiw	r24, 0x01	; 1
+ 244:	c9 f6       	brne	.-78     	; 0x1f8 <main+0x2e>
 			{
 				/*주요 로직*/
 				switch(motor_sel)	// motor_sel=1 : A, 2:B
- 1de:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 1e2:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <_edata+0x1>
- 1e6:	81 30       	cpi	r24, 0x01	; 1
- 1e8:	91 05       	cpc	r25, r1
- 1ea:	49 f0       	breq	.+18     	; 0x1fe <main+0x5c>
- 1ec:	02 97       	sbiw	r24, 0x02	; 2
- 1ee:	f1 f4       	brne	.+60     	; 0x22c <main+0x8a>
+ 246:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 24a:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <_edata+0x1>
+ 24e:	81 30       	cpi	r24, 0x01	; 1
+ 250:	91 05       	cpc	r25, r1
+ 252:	49 f0       	breq	.+18     	; 0x266 <main+0x9c>
+ 254:	02 97       	sbiw	r24, 0x02	; 2
+ 256:	f1 f4       	brne	.+60     	; 0x294 <main+0xca>
 						}	// 약이 떨어질 때 까지 motorA 돌리기
 						motorC();	// 잠금장치 풀기
 						break;
 					
 					case 2 :
-						while (check1 == 0)
- 1f0:	80 91 06 01 	lds	r24, 0x0106	; 0x800106 <check1>
- 1f4:	90 91 07 01 	lds	r25, 0x0107	; 0x800107 <check1+0x1>
- 1f8:	89 2b       	or	r24, r25
- 1fa:	81 f0       	breq	.+32     	; 0x21c <main+0x7a>
- 1fc:	16 c0       	rjmp	.+44     	; 0x22a <main+0x88>
+						while (check1 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+ 258:	80 91 07 01 	lds	r24, 0x0107	; 0x800107 <check1>
+ 25c:	90 91 08 01 	lds	r25, 0x0108	; 0x800108 <check1+0x1>
+ 260:	89 2b       	or	r24, r25
+ 262:	81 f0       	breq	.+32     	; 0x284 <main+0xba>
+ 264:	16 c0       	rjmp	.+44     	; 0x292 <main+0xc8>
 			{
 				/*주요 로직*/
 				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
-						while (check0 == 0)
- 1fe:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <check0>
- 202:	90 91 09 01 	lds	r25, 0x0109	; 0x800109 <check0+0x1>
- 206:	89 2b       	or	r24, r25
+						while (check0 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+ 266:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <check0>
+ 26a:	90 91 0a 01 	lds	r25, 0x010A	; 0x80010a <check0+0x1>
+ 26e:	89 2b       	or	r24, r25
 						{
 							motorA();
- 208:	39 f4       	brne	.+14     	; 0x218 <main+0x76>
- 20a:	51 df       	rcall	.-350    	; 0xae <motorA>
+ 270:	39 f4       	brne	.+14     	; 0x280 <main+0xb6>
+ 272:	2d df       	rcall	.-422    	; 0xce <motorA>
 			{
 				/*주요 로직*/
 				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
-						while (check0 == 0)
- 20c:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <check0>
- 210:	90 91 09 01 	lds	r25, 0x0109	; 0x800109 <check0+0x1>
- 214:	89 2b       	or	r24, r25
+						while (check0 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+ 274:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <check0>
+ 278:	90 91 0a 01 	lds	r25, 0x010A	; 0x80010a <check0+0x1>
 						{
 							motorA();
 						}	// 약이 떨어질 때 까지 motorA 돌리기
 						motorC();	// 잠금장치 풀기
- 216:	c9 f3       	breq	.-14     	; 0x20a <main+0x68>
+ 27c:	89 2b       	or	r24, r25
+ 27e:	c9 f3       	breq	.-14     	; 0x272 <main+0xa8>
 						break;
- 218:	80 df       	rcall	.-256    	; 0x11a <motorC>
+ 280:	5c df       	rcall	.-328    	; 0x13a <motorC>
 					
 					case 2 :
-						while (check1 == 0)
+						while (check1 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
 						{
 							motorB();
- 21a:	08 c0       	rjmp	.+16     	; 0x22c <main+0x8a>
- 21c:	63 df       	rcall	.-314    	; 0xe4 <motorB>
+ 282:	08 c0       	rjmp	.+16     	; 0x294 <main+0xca>
+ 284:	3f df       	rcall	.-386    	; 0x104 <motorB>
 						}	// 약이 떨어질 때 까지 motorA 돌리기
 						motorC();	// 잠금장치 풀기
 						break;
 					
 					case 2 :
-						while (check1 == 0)
- 21e:	80 91 06 01 	lds	r24, 0x0106	; 0x800106 <check1>
- 222:	90 91 07 01 	lds	r25, 0x0107	; 0x800107 <check1+0x1>
- 226:	89 2b       	or	r24, r25
+						while (check1 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+ 286:	80 91 07 01 	lds	r24, 0x0107	; 0x800107 <check1>
+ 28a:	90 91 08 01 	lds	r25, 0x0108	; 0x800108 <check1+0x1>
+ 28e:	89 2b       	or	r24, r25
 						{
 							motorB();
 						}	// 약이 떨어질 때 까지 motorB 돌리기
 						motorC();	// 잠금장치 풀기
- 228:	c9 f3       	breq	.-14     	; 0x21c <main+0x7a>
- 22a:	77 df       	rcall	.-274    	; 0x11a <motorC>
+ 290:	c9 f3       	breq	.-14     	; 0x284 <main+0xba>
+ 292:	53 df       	rcall	.-346    	; 0x13a <motorC>
 						break;
 					
 					default:
 						break;
 				}
 				check0=0; check1=0;	// 다시 약 체크상황 없는걸로 초기화
- 22c:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <check0+0x1>
- 230:	10 92 08 01 	sts	0x0108, r1	; 0x800108 <check0>
- 234:	10 92 07 01 	sts	0x0107, r1	; 0x800107 <check1+0x1>
- 238:	10 92 06 01 	sts	0x0106, r1	; 0x800106 <check1>
- 23c:	c4 cf       	rjmp	.-120    	; 0x1c6 <main+0x24>
+ 294:	10 92 0a 01 	sts	0x010A, r1	; 0x80010a <check0+0x1>
+ 298:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <check0>
+ 29c:	10 92 08 01 	sts	0x0108, r1	; 0x800108 <check1+0x1>
+ 2a0:	10 92 07 01 	sts	0x0107, r1	; 0x800107 <check1>
+ 2a4:	a9 cf       	rjmp	.-174    	; 0x1f8 <main+0x2e>
 
-0000023e <_exit>:
- 23e:	f8 94       	cli
+000002a6 <_exit>:
+ 2a6:	f8 94       	cli
 
-00000240 <__stop_program>:
- 240:	ff cf       	rjmp	.-2      	; 0x240 <__stop_program>
+000002a8 <__stop_program>:
+ 2a8:	ff cf       	rjmp	.-2      	; 0x2a8 <__stop_program>
