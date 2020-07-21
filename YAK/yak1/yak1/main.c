@@ -3,6 +3,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "hx711.h"
+#include "clcd.h"
+#include <string.h>	// strcpy
 
 volatile int check0 = 0;	// 포토 인터럽트0
 volatile int check1 = 0;	// 포토 인터럽트1
@@ -43,12 +45,12 @@ void motorC2()	// 잠금장치 ON OFF
 	OCR1C = 1000;	// 돌아가기 전으로
 }
 
-ISR(INT0_vect) // PORTD0 포토 인터럽트0
+ISR(INT6_vect) // PORTD0 포토 인터럽트0
 {
 	check0 = 1;
 }
 
-ISR(INT1_vect) // PORTD1 포토 인터럽트1
+ISR(INT7_vect) // PORTD1 포토 인터럽트1
 {
 	check1 = 1;
 }
@@ -84,19 +86,35 @@ char uart_receive(void)
 int main(void)
 {
 	DDRB=0b11100000;   // PB567 out
-	TCCR1A=0b10101010; TCCR1B=0x1A;  ICR1=19999; // OCR1A -> OC Clear / Fast PWM TOP = ICR1 / 8분주
-	//OCR1A=3000; OCR1B=3000;
+	TCCR1A=0b10101010; TCCR1B=0x1A;  ICR1=19999; 
+	// OCR1A -> OC Clear / Fast PWM TOP = ICR1 / 8분주
+	// OCR1A=3000; OCR1B=3000;
 	// TCCR1B=0x1A; OCR1A=3000; ICR1=19999;
+	
 	uart_init();
 
-	// External Interrupt(s) initialization
-	EICRA=0b00001010; //외부인터럽트 01번핀 트리거 신호를  falling edge 설정
-	EICRB=0x00; 
-	EIMSK=0x03; //INT0 1번핀을 외부인터럽트 핀으로 설정, 0 1번 외부인터럽트 활성화	
+	// 외부 인터럽트 초기화
+	EICRA=0b00000000; //외부인터럽트 01번핀 트리거 신호를  falling edge 설정
+	EICRB=0b10100000; 
+	EIMSK=0b11000000; //INT6, 7을 외부 인터럽트로 사용하기 위해서	
 	
 	sei();
 	
 	weight_init();	// 무게 측정 코드 레지스터 설정 함수
+	
+	i2c_lcd_init();	// clcd i2c 통신 초기화
+	
+	char str0[16] = "1234";
+	char str1[16] = "ATmega128";
+	
+	i2c_lcd_string(0, 0, str0);
+	i2c_lcd_string(1, 0, str1);
+	
+	i2c_lcd_string(1, 0, "test");	// 됨
+	
+//	str0[16] = "111111";		// 안됨
+	strcpy(str0, "111111");		// 해결법 string.h 해서.. (문자열을 대입하는 strcpy 함수 사용)
+	i2c_lcd_string(0, 0, str0);	//
 	
 	/* 무게 알고리즘 미완성 ★★★★★★
 	
