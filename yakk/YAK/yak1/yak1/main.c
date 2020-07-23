@@ -6,7 +6,7 @@
 #include "clcd.h"
 #include <string.h>	// strcpy
 #include <stdio.h>	// sprintf
-
+//
 volatile int check0 = 0;	// 포토 인터럽트0
 volatile int check1 = 0;	// 포토 인터럽트1
 volatile char receive = 0;	// 어플 받아오는 값
