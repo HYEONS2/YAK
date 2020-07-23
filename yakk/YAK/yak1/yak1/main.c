@@ -143,7 +143,22 @@ int main(void)
 		// 약을 체크하는 코드 넣어야 함 (check_yak 변하게)
 		// 무게는 weight = ReadCout()/4
 		// ....
-		check_yak = 0;
+		/* 
+		약체크 코드 약을 한번 떨어 뜨릴 때 마다 체크 하기?
+		volatile int yak_cnt0 = 0;
+		volatile int yak_cnt1 = 0;
+			// 떨어질 때 마다 카운트
+		if(check0 == 1){
+			yak_cnt0 += 1;
+		}
+		if(check1 == 1){
+			yak_cnt1 += 1;
+		}
+		// LCD에 뿌릴 약 먹은 갯수
+		sprintf(str1, "YAK0 : %d / YAK1 : %d", yak_cnt0, yak_cnt1);	// 해결책 stdio.h.. 
+		i2c_lcd_string(1, 0, str1);	//
+		*/
+		check_yak = 1;	// 일단 약은 항상 있다고..
 		
 		if(check_yak == 1)
 		{
