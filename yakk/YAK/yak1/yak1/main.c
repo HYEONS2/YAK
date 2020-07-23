@@ -163,21 +163,20 @@ int main(void)
 		if(check_yak == 1)
 		{
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
-			// ....
-			
+
 			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
 			// 폴링 방식이 안된다면 인터럽트로 수신받아야 함
 			
 			if(receive == 'a'){
-				// A약 시간이 맞으면 a 를 받음 (알람일때?)
+				// A약 시간이 맞으면 a 를 받음 (알람일때)
 				check_time = 1;
 				motor_sel = 1;	// a모터 선택
 			} else if(receive == 'b'){
-				// B약 시간이 맞으면 b 를 받음 (알람일때?)
+				// B약 시간이 맞으면 b 를 받음 (알람일때)
 				check_time = 1;
 				motor_sel = 2;	// b모터 선택
 			}
-			
+			// 어플에서 알람시간이 안맞더라도 a, b 보내는 버튼 만들기 필요
 			if(check_time == 1)
 			{
 				/*주요 로직*/
@@ -202,8 +201,9 @@ int main(void)
 					default:
 						break;
 				}
+				// 약이 떨어 졌으니
 				check0=0; check1=0;	// 다시 약 체크상황 없는걸로 초기화
 			} else { /*...*/ }
-		} else { /*uart_send('n');*/ } // 약이없다고 알람보내기 어플한테 n을 보냄
+		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
 	}
 }
