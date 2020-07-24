@@ -105,21 +105,21 @@ int main(void)
 	
 	i2c_lcd_init();	// clcd i2c 통신 초기화
 	
-	char str0[16] = "1234";
-	char str1[16] = "ATmega128";
+	char str0[16] = "LHJ PJH SAMRTYAK";
+	char str1[16] = "0";
 	
 	i2c_lcd_string(0, 0, str0);
 	i2c_lcd_string(1, 0, str1);
 	
-	i2c_lcd_string(1, 0, "test");	// 됨
+//	i2c_lcd_string(1, 0, "test");	// 됨
 	
 	
 //	str0[16] = "111111";		// 안됨
-	strcpy(str0, "11111");		// 해결법 string.h 해서.. (문자열을 대입하는 strcpy 함수 사용)
+//	strcpy(str0, "11111");		// 해결법 string.h 해서.. (문자열을 대입하는 strcpy 함수 사용)
 								// 하지만 값을 실시간으로 바꿔야하는게 불가능
-	i2c_lcd_string(0, 0, str0);	//
-	sprintf(str0, "%d", 12345);	// 해결책 stdio.h.. 
-	i2c_lcd_string(0, 0, str0);	//
+//	i2c_lcd_string(0, 0, str0);	//
+//	sprintf(str0, "%d", 12345);	// 해결책 stdio.h.. 
+//	i2c_lcd_string(0, 0, str0);	//
 
 	/* 무게 알고리즘 미완성 ★★★★★★
 	
@@ -132,7 +132,8 @@ int main(void)
 	long temp_weight[5]=0;	
 	
 	★★★★★★★★★..  */
-	init();
+
+//	init();
 	while(1)
 	{
 // 		weight1 = ReadCout()/4;
@@ -144,6 +145,7 @@ int main(void)
 		// 무게는 weight = ReadCout()/4
 		// ....
 		/* 
+
 		약체크 코드 약을 한번 떨어 뜨릴 때 마다 체크 하기?
 		volatile int yak_cnt0 = 0;
 		volatile int yak_cnt1 = 0;
@@ -155,8 +157,9 @@ int main(void)
 			yak_cnt1 += 1;
 		}
 		// LCD에 뿌릴 약 먹은 갯수
-		sprintf(str1, "YAK0 : %d / YAK1 : %d", yak_cnt0, yak_cnt1);	// 해결책 stdio.h.. 
+		sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt0, yak_cnt1);	// 해결책 stdio.h.. 
 		i2c_lcd_string(1, 0, str1);	//
+		
 		*/
 		check_yak = 1;	// 일단 약은 항상 있다고..
 		
@@ -165,7 +168,7 @@ int main(void)
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
 
 			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
-			// 폴링 방식이 안된다면 인터럽트로 수신받아야 함
+			// 여기서 멈춤 -> 폴링 방식이 안된다면 인터럽트로 수신받아야 함
 			
 			if(receive == 'a'){
 				// A약 시간이 맞으면 a 를 받음 (알람일때)
@@ -176,7 +179,10 @@ int main(void)
 				check_time = 1;
 				motor_sel = 2;	// b모터 선택
 			}
+			
 			// 어플에서 알람시간이 안맞더라도 a, b 보내는 버튼 만들기 필요
+			// ,,,
+
 			if(check_time == 1)
 			{
 				/*주요 로직*/
@@ -201,7 +207,7 @@ int main(void)
 					default:
 						break;
 				}
-				// 약이 떨어 졌으니
+				// 약이 떨어 졌으니..
 				check0=0; check1=0;	// 다시 약 체크상황 없는걸로 초기화
 			} else { /*...*/ }
 		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
