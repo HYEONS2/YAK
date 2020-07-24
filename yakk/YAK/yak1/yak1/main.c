@@ -19,6 +19,9 @@ volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택�
 
 volatile long weight1 = 0;
 
+volatile int yak_cnt0 = 0;
+volatile int yak_cnt1 = 0;
+
 void motorA()
 {
 	OCR1A = 3100; // +90 deg
@@ -146,19 +149,7 @@ int main(void)
 		// ....
 		/* 
 
-		약체크 코드 약을 한번 떨어 뜨릴 때 마다 체크 하기?
-		volatile int yak_cnt0 = 0;
-		volatile int yak_cnt1 = 0;
-			// 떨어질 때 마다 카운트
-		if(check0 == 1){
-			yak_cnt0 += 1;
-		}
-		if(check1 == 1){
-			yak_cnt1 += 1;
-		}
-		// LCD에 뿌릴 약 먹은 갯수
-		sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt0, yak_cnt1);	// 해결책 stdio.h.. 
-		i2c_lcd_string(1, 0, str1);	//
+	
 		
 		*/
 		check_yak = 1;	// 일단 약은 항상 있다고..
@@ -209,6 +200,19 @@ int main(void)
 				}
 				// 약이 떨어 졌으니..
 				check0=0; check1=0;	// 다시 약 체크상황 없는걸로 초기화
+				check_time=0;		// 타임이 이제 아닌걸로..	
+				
+				//약체크 코드 - 약을 한번 떨어 뜨릴 때 마다 체크 하기?
+				// 떨어질 때 마다 카운트
+				if(check0 == 1){
+					yak_cnt0 += 1;
+				}
+				if(check1 == 1){
+					yak_cnt1 += 1;
+				}
+				// LCD에 뿌릴 약 먹은 갯수
+				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt0, yak_cnt1);	
+				i2c_lcd_string(1, 0, str1);
 			} else { /*...*/ }
 		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
 	}
