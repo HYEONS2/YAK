@@ -63,18 +63,18 @@ ISR(INT7_vect) // PORTD1 포토 인터럽트1
 ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
 	isr_receive=UDR0;
 
-	switch(isr_receive) { 	// o:open, c:close, A:a약 강제, B:b약 강제
+	switch(isr_receive) { 	// o:open, c:close, 1:a약 강제, 2:b약 강제
 		case 'o':
 			motorC();
 			break;
 		case 'c':
 			motorC2();
 			break;
-		case 'A':
+		case '1':
 			check_time = 1;
 			motor_sel = 1;
 			break;
-		case 'B':
+		case '2':
 			check_time = 1;
 			motor_sel = 2;
 			break;
@@ -179,7 +179,7 @@ int main(void)
 			// 여기서 멈춤 -> 폴링 방식이 안된다면 인터럽트로 수신받아야 함
 			
 			/* 인터럽트로 했을 때
-			(인터럽트로 한다면 receive = uart_receive() 없애야함)
+			(인터럽트로 한다면 receive = uart_receive() 없애야함!)
 			isr_receive // 인터럽트로 받아온 변수
 			if(isr_receive == 'a'){
 				// A약 시간이 맞으면 a 를 받음 (알람일때)
@@ -189,7 +189,7 @@ int main(void)
 				// B약 시간이 맞으면 b 를 받음 (알람일때)
 				check_time = 1;
 				motor_sel = 2;	// b모터 선택
-			}
+			} ---> 이 코드를 USART ISR vect 에 넣어도 될듯?..
 			*/
 
 			if(receive == 'a'){
@@ -242,9 +242,9 @@ int main(void)
 				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt0, yak_cnt1);	
 				i2c_lcd_string(1, 0, str1);
 				// 약이 떨어 졌으니..
-				check0=0; check1=0;	// 다시 약 체크상황 없는걸로 초기화
-				check_time=0;		// 타임이 이제 아닌걸로..	
-			} else { /*...*/ }
+				check0=0; check1=0;				// 다시 약 체크상황 없는걸로 초기화
+				check_time=0; motor_sel = 0;	// 타임이 이제 아닌걸로..	
+			} else { /*약 먹을 시간 아님*/ }
 		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
 	}
 }
