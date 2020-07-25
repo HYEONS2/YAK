@@ -129,7 +129,7 @@ int main(void)
 	EICRB=0b10100000; 
 	EIMSK=0b11000000; //INT6, 7을 외부 인터럽트로 사용하기 위해서	
 	
-	sei();
+//	sei(); // uart_init(); 에 있음
 	weight_init();	// 무게 측정 코드 레지스터 설정 함수
 	i2c_lcd_init();	// clcd i2c 통신 초기화
 	
@@ -215,7 +215,7 @@ int main(void)
 						{
 							motorA();
 						}	// 약이 떨어질 때 까지 motorA 돌리기 check0 = 1이 되면 while 문 끝남
-						motorC();	// 잠금장치 풀기
+						// motorC();	// 잠금장치 풀기
 						break;
 					
 					case 2 :
@@ -223,7 +223,7 @@ int main(void)
 						{
 							motorB();
 						}	// 약이 떨어질 때 까지 motorB 돌리기 check1 = 1이 되면 while 문 끝남
-						motorC();	// 잠금장치 풀기
+						// motorC();	// 잠금장치 풀기
 						break;
 					
 					default:
@@ -231,6 +231,7 @@ int main(void)
 				}
 				//약체크 코드 - 약을 한번 떨어 뜨릴 때 마다 체크 하기?
 				// 떨어질 때 마다 카운트
+				// 이걸 인터럽트 함수에 넣는게 낫나 .. 상관 없을 듯
 				if(check0 == 1){
 					yak_cnt0 += 1;
 				}
