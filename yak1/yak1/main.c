@@ -7,8 +7,8 @@
 #include <string.h>	// strcpy
 #include <stdio.h>	// sprintf
 //
-volatile int check0 = 0;	// 포토 인터럽트0
-volatile int check1 = 0;	// 포토 인터럽트1
+volatile int check1 = 0;	// 포토 인터럽트0
+volatile int check2 = 0;	// 포토 인터럽트1
 volatile char receive = 0;	// 어플 받아오는 값
 volatile char send = 0;		// 어플 주는 값
 volatile char isr_receive = 0;	// 어플 받아오는 값
@@ -20,8 +20,8 @@ volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택�
 
 volatile long weight1 = 0;
 
-volatile int yak_cnt0 = 0;
 volatile int yak_cnt1 = 0;
+volatile int yak_cnt2 = 0;
 
 void motorA()
 {
@@ -52,17 +52,17 @@ void motorC2()	// 잠금장치 ON OFF
 
 ISR(INT6_vect) // PORTD0 포토 인터럽트0
 {
-	check0 = 1;
+	check1 = 1;
 }
 
 ISR(INT7_vect) // PORTD1 포토 인터럽트1
 {
-	check1 = 1;
+	check2 = 1;
 }
 
 ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
 	isr_receive=UDR0;
-
+	
 	switch(isr_receive) { 	// o:open, c:close, 1:a약 강제, 2:b약 강제
 		case 'o':
 			motorC();
@@ -78,11 +78,11 @@ ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
 			check_time = 1;
 			motor_sel = 2;
 			break;
-		case 'r':
-			yak_cnt0 = 0;
-			break;
-		case 'R':
+		case 'r':	// reset1
 			yak_cnt1 = 0;
+			break;
+		case 'R':	// reset2
+			yak_cnt2 = 0;
 			break;
 	}
 }
@@ -211,40 +211,40 @@ int main(void)
 				switch(motor_sel)	// motor_sel=1 : A, 2:B
 				{
 					case 1 :
-						while (check0 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+						while (check1 == 0)		// check1,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
 						{
 							motorA();
-						}	// 약이 떨어질 때 까지 motorA 돌리기 check0 = 1이 되면 while 문 끝남
+						}	// 약이 떨어질 때 까지 motorA 돌리기 check1 = 1이 되면 while 문 끝남
 						// motorC();	// 잠금장치 풀기
 						break;
 					
 					case 2 :
-						while (check1 == 0)		// check0,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
+						while (check2 == 0)		// check1,1 변수는 포토인터럽트 모듈의 인터럽트에 의해서 변경됨
 						{
 							motorB();
-						}	// 약이 떨어질 때 까지 motorB 돌리기 check1 = 1이 되면 while 문 끝남
+						}	// 약이 떨어질 때 까지 motorB 돌리기 check2 = 1이 되면 while 문 끝남
 						// motorC();	// 잠금장치 풀기
 						break;
 					
 					default:
 						break;
 				}
-				//약체크 코드 - 약을 한번 떨어 뜨릴 때 마다 체크 하기?
+				// 약체크 코드 - 약을 한번 떨어 뜨릴 때 마다 체크 하기?
 				// 떨어질 때 마다 카운트
 				// 이걸 인터럽트 함수에 넣는게 낫나 .. 상관 없을 듯
-				if(check0 == 1){
-					yak_cnt0 += 1;
-				}
 				if(check1 == 1){
 					yak_cnt1 += 1;
 				}
+				if(check2 == 1){
+					yak_cnt2 += 1;
+				}
 				// LCD에 뿌릴 약 먹은 갯수
-				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt0, yak_cnt1);	
+				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt1, yak_cnt2);	
 				i2c_lcd_string(1, 0, str1);
 				// 약이 떨어 졌으니..
-				check0=0; check1=0;				// 다시 약 체크상황 없는걸로 초기화
-				check_time=0; motor_sel = 0;	// 타임이 이제 아닌걸로..	
-			} else { /*약 먹을 시간 아님*/ }
+				check1=0; check2=0;				// 다시 약 체크상황 없는걸로 초기화
+				check_time=0; motor_sel = 0;	// 타임이 이제 아닌걸로.. motor_sel도 0
+			} else { /*약 먹을 시간 아님, 이 땐 할거 딱히 없음*/ }
 		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
 	}
 }
