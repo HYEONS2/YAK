@@ -241,9 +241,15 @@ int main(void)
 				// LCD에 뿌릴 약 먹은 갯수
 				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt1, yak_cnt2);	
 				i2c_lcd_string(1, 0, str1);
-				// 약이 떨어 졌으니..
-				check1=0; check2=0;				// 다시 약 체크상황 없는걸로 초기화
-				check_time=0; motor_sel = 0;	// 타임이 이제 아닌걸로.. motor_sel도 0
+				if(yak_cnt1 >= 10) uart_send('h');
+				if(yak_cnt2 >= 10) uart_send('H');
+				// 10개 이상 카운트 된다면 어플에 h, H 보내기
+				// 경고처리 할 예정
+				
+				// 약이 바닥으로 떨어졌으니 check1,2 = 0으로
+				check1 = 0; check2 = 0;			// 다시 약 체크상황 없는걸로 초기화
+				check_time = 0; motor_sel = 0;	// 타임이 이제 아닌걸로.. motor_sel도 0
+				receive = 0; isr_receive = 0;	// 받은값 다시 초기화
 			} else { /*약 먹을 시간 아님, 이 땐 할거 딱히 없음*/ }
 		} else { uart_send('n'); } // 약이없다고 알람보내기 어플한테 n을 보냄
 	}
