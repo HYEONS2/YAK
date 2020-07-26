@@ -9,16 +9,17 @@
 //
 volatile int check1 = 0;	// 포토 인터럽트0
 volatile int check2 = 0;	// 포토 인터럽트1
+
 volatile char receive = 0;	// 어플 받아오는 값
 volatile char send = 0;		// 어플 주는 값
-volatile char isr_receive = 0;	// 어플 받아오는 값
+volatile char isr_receive = 0;	// 어플 받아오는 값(인터러트)
 
 volatile int check_yak = 0;		// 약이 통안에 있는지 파악하기 위한 변수
 volatile int check_time = 0;	// 약 시간인지 아닌지 파악하기 위한 변수
 
 volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택할 변수 switch case ..
 
-volatile long weight1 = 0;
+// volatile long weight1 = 0;
 
 volatile int yak_cnt1 = 0;
 volatile int yak_cnt2 = 0;
@@ -47,7 +48,7 @@ void motorC()	// 잠금장치 ON OFF
 
 void motorC2()	// 잠금장치 ON OFF
 {
-	OCR1C = 1000;	// 돌아가기 전으로
+	OCR1C = 1000;	// 돌아가기 전으로 (-90 deg)
 }
 
 ISR(INT6_vect) // PORTD0 포토 인터럽트0
@@ -179,17 +180,21 @@ int main(void)
 			// 여기서 멈춤 -> 폴링 방식이 안된다면 인터럽트로 수신받아야 함
 			
 			/* 인터럽트로 했을 때
+			
 			(인터럽트로 한다면 receive = uart_receive() 없애야함!)
-			isr_receive // 인터럽트로 받아온 변수
+			(isr_receive // 인터럽트로 받아온 변수)
 			if(isr_receive == 'a'){
 				// A약 시간이 맞으면 a 를 받음 (알람일때)
 				check_time = 1;
 				motor_sel = 1;	// a모터 선택
+				isr_receive == '0';
 			} else if(isr_receive == 'b'){
 				// B약 시간이 맞으면 b 를 받음 (알람일때)
 				check_time = 1;
 				motor_sel = 2;	// b모터 선택
+				isr_receive == '0';
 			} ---> 이 코드를 USART ISR vect 에 넣어도 될듯?..
+			
 			*/
 
 			if(receive == 'a'){
@@ -245,7 +250,7 @@ int main(void)
 				if(yak_cnt2 >= 10) uart_send('H');
 				// 10개 이상 카운트 된다면 어플에 h, H 보내기
 				// 경고처리 할 예정
-				
+
 				// 약이 바닥으로 떨어졌으니 check1,2 = 0으로
 				check1 = 0; check2 = 0;			// 다시 약 체크상황 없는걸로 초기화
 				check_time = 0; motor_sel = 0;	// 타임이 이제 아닌걸로.. motor_sel도 0
