@@ -24,6 +24,9 @@ volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택�
 volatile int yak_cnt1 = 0;
 volatile int yak_cnt2 = 0;
 
+char str0[16] = "LHJ PJH SAMRTYAK";
+char str1[16] = "0";
+
 void motorA()
 {
 	OCR1A = 3100; // +90 deg
@@ -81,9 +84,13 @@ ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
 			break;
 		case 'r':	// reset1
 			yak_cnt1 = 0;
+				sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);
+				i2c_lcd_string(1, 0, str1);			
 			break;
 		case 'R':	// reset2
 			yak_cnt2 = 0;
+				sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);
+				i2c_lcd_string(1, 0, str1);			
 			break;
 	}
 }
@@ -134,9 +141,9 @@ int main(void)
 	weight_init();	// 무게 측정 코드 레지스터 설정 함수
 	i2c_lcd_init();	// clcd i2c 통신 초기화
 	
-	char str0[16] = "LHJ PJH SAMRTYAK";
-	char str1[16] = "0";
 	i2c_lcd_string(0, 0, str0);
+
+	sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);
 	i2c_lcd_string(1, 0, str1);
 	
 //	i2c_lcd_string(1, 0, "test");	// 됨
@@ -176,13 +183,13 @@ int main(void)
 		{
 			// 어플에서 시간이 맞으면 블루투스로 받아서 check_time 변하게 해야함 
 
-			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
-			// 여기서 멈춤 -> 폴링 방식이 안된다면 인터럽트로 수신받아야 함
+// 			receive = uart_receive();	// 폴링방식이여서 어플에서 안보내면 여기서 멈춤
+// 			// 여기서 멈춤 -> 폴링 방식이 안된다면 인터럽트로 수신받아야 함
 			
-			/* 인터럽트로 했을 때
-			
-			(인터럽트로 한다면 receive = uart_receive() 없애야함!)
-			(isr_receive // 인터럽트로 받아온 변수)
+//			인터럽트로 했을 때
+// 			
+// 			(인터럽트로 한다면 receive = uart_receive() 없애야함!)
+//			(isr_receive // 인터럽트로 받아온 변수)
 			if(isr_receive == 'a'){
 				// A약 시간이 맞으면 a 를 받음 (알람일때)
 				check_time = 1;
@@ -193,22 +200,22 @@ int main(void)
 				check_time = 1;
 				motor_sel = 2;	// b모터 선택
 				isr_receive == '0';
-			} ---> 이 코드를 USART ISR vect 에 넣어도 될듯?..
+			}/* ---> 이 코드를 USART ISR vect 에 넣어도 될듯?..*/
 			
-			*/
+			
 
-			if(receive == 'a'){
-				// A약 시간이 맞으면 a 를 받음 (알람일때)
-				check_time = 1;
-				motor_sel = 1;	// a모터 선택
-			} else if(receive == 'b'){
-				// B약 시간이 맞으면 b 를 받음 (알람일때)
-				check_time = 1;
-				motor_sel = 2;	// b모터 선택
-			}
+// 			if(receive == 'a'){
+// 				// A약 시간이 맞으면 a 를 받음 (알람일때)
+// 				check_time = 1;
+// 				motor_sel = 1;	// a모터 선택
+// 			} else if(receive == 'b'){
+// 				// B약 시간이 맞으면 b 를 받음 (알람일때)
+// 				check_time = 1;
+// 				motor_sel = 2;	// b모터 선택
+// 			}
 			
-			// 어플에서 알람시간이 안맞더라도 a, b 보내는 버튼 만들기 필요 -- 인터럽트로 만듦
-			// ,,,
+// 			// 어플에서 알람시간이 안맞더라도 a, b 보내는 버튼 만들기 필요 -- 인터럽트로 만듦
+// 			// ,,,
 
 			if(check_time == 1)
 			{
@@ -244,11 +251,20 @@ int main(void)
 					yak_cnt2 += 1;
 				}
 				// LCD에 뿌릴 약 먹은 갯수
-				sprintf(str1, "YAK0:%d / YAK1:%d", yak_cnt1, yak_cnt2);	
+				sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);	
 				i2c_lcd_string(1, 0, str1);
-				if(yak_cnt1 >= 10) uart_send('h');
-				if(yak_cnt2 >= 10) uart_send('H');
-				// 10개 이상 카운트 된다면 어플에 h, H 보내기
+/* 				if(yak_cnt1 >= 10) uart_send('h');
+				if(yak_cnt2 >= 10) uart_send('H'); */
+				
+				if(yak_cnt1 >= 10 && yak_cnt2 >= 10){
+					uart_send('7');
+				} else if(yak_cnt1 >= 10){
+					uart_init('8');
+				} else if(yak_cnt2 >= 10){
+					uart_init('9');
+				}
+				// ★★★ 한번만 보내지게 해야함 ★★★ //
+				// 10개 이상 카운트 된다면 어플에 h, H 보내기 -> 7 8 9 로
 				// 경고처리 할 예정
 
 				// 약이 바닥으로 떨어졌으니 check1,2 = 0으로
