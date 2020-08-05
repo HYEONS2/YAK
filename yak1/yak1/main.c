@@ -24,7 +24,7 @@ volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택�
 volatile int yak_cnt1 = 0;
 volatile int yak_cnt2 = 0;
 
-char str0[16] = "LHJ PJH SAMRTYAK";
+char str0[16] = "LHJ PJH SMARTYAK";
 char str1[16] = "0";
 
 void motorA()
