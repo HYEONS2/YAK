@@ -23,24 +23,42 @@ volatile int motor_sel = 0; // 1:A 2:B 3:C .. 어떤 모터를 돌릴지 선택�
 
 volatile int yak_cnt1 = 0;
 volatile int yak_cnt2 = 0;
+volatile int yak_status = 0;
 
 char str0[16] = "LHJ PJH SMARTYAK";
 char str1[16] = "0";
 
 void motorA()
 {
-	OCR1A = 3100; // +90 deg
-	_delay_ms(1000);
-	OCR1A = 1000; // -90 deg
-	_delay_ms(1000);
+//	OCR1A = 3100; // +90 deg
+// 	OCR1A = 1000;
+	for(int i=0 ;i<43; i++){
+		if(check1 == 1){
+			break;
+			OCR1A =1000;
+		}		
+		OCR1A = 1000 + (50*i);
+		_delay_ms(70);
+	}
+// 	_delay_ms(1000);
+// 	OCR1A = 1000; // -90 deg
+// 	_delay_ms(1000);
 }
 
 void motorB()
 {
-	OCR1B = 3100;	// +90 deg
-	_delay_ms(1000);
-	OCR1B = 1000;	// -90 deg
-	_delay_ms(1000);
+// 	OCR1B = 3100;	// +90 deg
+// 	_delay_ms(1000);
+// 	OCR1B = 1000;	// -90 deg
+// 	_delay_ms(1000);
+	for(int j=0 ;j<43; j++){
+		if(check2 == 1){
+			break;
+			OCR1B =1000;
+		}
+		OCR1B = 1000 + (50*j);
+		_delay_ms(100);
+	}
 }
 
 void motorC()	// 잠금장치 ON OFF
@@ -57,11 +75,13 @@ void motorC2()	// 잠금장치 ON OFF
 ISR(INT6_vect) // PORTD0 포토 인터럽트0
 {
 	check1 = 1;
+	OCR1A = 1000; // -90 deg
 }
 
 ISR(INT7_vect) // PORTD1 포토 인터럽트1
 {
 	check2 = 1;
+	OCR1B = 1000;
 }
 
 ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
@@ -84,11 +104,13 @@ ISR(USART0_RX_vect){	// 인터럽트 수신 // UCSR0B 에 RXCIE = 1 해야함.
 			break;
 		case 'r':	// reset1
 			yak_cnt1 = 0;
+			yak_status = 0;
 				sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);
 				i2c_lcd_string(1, 0, str1);			
 			break;
 		case 'R':	// reset2
 			yak_cnt2 = 0;
+			yak_status = 0;
 				sprintf(str1, "YAK1:%d / YAK2:%d ", yak_cnt1, yak_cnt2);
 				i2c_lcd_string(1, 0, str1);			
 			break;
@@ -256,12 +278,17 @@ int main(void)
 /* 				if(yak_cnt1 >= 10) uart_send('h');
 				if(yak_cnt2 >= 10) uart_send('H'); */
 				
-				if(yak_cnt1 >= 10 && yak_cnt2 >= 10){
-					uart_send('7');
-				} else if(yak_cnt1 >= 10){
-					uart_init('8');
-				} else if(yak_cnt2 >= 10){
-					uart_init('9');
+				if(!(yak_status)){
+					if(yak_cnt1 >= 10 && yak_cnt2 >= 10){
+						uart_send('7');	// 둘다 10
+						yak_status = 1;
+						} else if(yak_cnt1 >= 10){
+						uart_init('8');	// 1번칸 10 이상
+						yak_status = 1;
+						} else if(yak_cnt2 >= 10){
+						uart_init('9');	// 2번칸 10 이상
+						yak_status = 1;
+					}				
 				}
 				// ★★★ 한번만 보내지게 해야함 ★★★ //
 				// 10개 이상 카운트 된다면 어플에 h, H 보내기 -> 7 8 9 로
