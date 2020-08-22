@@ -1,5 +1,7 @@
 # YAK
-YAK 
+## 개발환경
+1. Atmel Studio 7 (Version : 7.0.1931)
+2. OS : Windows 10 Education (1903)
 
 스마트약통 
 
